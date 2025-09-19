@@ -1,13 +1,13 @@
 import mongoose, { Schema, Types } from "mongoose";
 const contentType = ["image", "article", "video", "audio"];
 
-export const userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
-  email: { type: String, required: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
 });
 
-export const contentSchema = new mongoose.Schema({
+const contentSchema = new mongoose.Schema({
   link: { type: String, required: true },
   type: { type: String, enum: contentType, required: true },
   title: { type: String, required: true },
@@ -15,11 +15,16 @@ export const contentSchema = new mongoose.Schema({
   userId: { type: Types.ObjectId, ref: "User", required: true },
 });
 
-export const tagSchema = new mongoose.Schema({
+const tagSchema = new mongoose.Schema({
   title: { type: String, required: true },
 });
 
-export const linkSchema = new mongoose.Schema({
+const linkSchema = new mongoose.Schema({
   hash: { type: String, required: true },
   userId: { type: Types.ObjectId, required: true },
 });
+
+export const userModel = mongoose.model("user", userSchema);
+export const contentModel = mongoose.model("content", userSchema);
+export const tagModel = mongoose.model("tag", userSchema);
+export const linkModel = mongoose.model("link", userSchema);
