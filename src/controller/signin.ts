@@ -24,6 +24,7 @@ export async function signin(req: Request, res: Response) {
         return res.json({ message: "user not found" });
       }
       const payload = {
+        userId: user._id,
         username: user.username,
         email: user.email,
       };

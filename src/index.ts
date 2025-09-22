@@ -1,5 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
+import cookieParser from "cookie-parser";
 import express from "express";
 import mongoose from "mongoose";
 import { signup } from "./controller/signup.js";
@@ -9,6 +10,7 @@ import { auth } from "./middleware/auth.js";
 import { addContent } from "./controller/addContent.js";
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 // --- Routes ---
 app.post("/api/v1/signup", signup);
