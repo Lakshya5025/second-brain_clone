@@ -5,15 +5,15 @@ import mongoose from "mongoose";
 import { signup } from "./controller/signup.js";
 import type { Request, Response } from "express";
 import { signin } from "./controller/signin.js";
+import { auth } from "./middleware/auth.js";
+import { addContent } from "./controller/addContent.js";
 const app = express();
 app.use(express.json());
 
 // --- Routes ---
 app.post("/api/v1/signup", signup);
 app.post("/api/v1/signin", signin);
-app.post("/api/v1/content", (req: Request, res: Response) => {
-  res.status(501).json({ message: "Not Implemented" });
-});
+app.post("/api/v1/content", auth, addContent);
 app.get("/api/v1/content", (req: Request, res: Response) => {
   res.status(501).json({ message: "Not Implemented" });
 });
