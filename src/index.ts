@@ -2,16 +2,15 @@ import * as dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
-import { signup } from "./middleware/signup.js";
+import { signup } from "./controller/signup.js";
 import type { Request, Response } from "express";
+import { signin } from "./controller/signin.js";
 const app = express();
 app.use(express.json());
 
 // --- Routes ---
 app.post("/api/v1/signup", signup);
-app.post("/api/v1/signin", (req: Request, res: Response) => {
-  res.status(501).json({ message: "Not Implemented" });
-});
+app.post("/api/v1/signin", signin);
 app.post("/api/v1/content", (req: Request, res: Response) => {
   res.status(501).json({ message: "Not Implemented" });
 });

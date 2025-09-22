@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { userModel } from "../models/models.js";
 import bcrypt from "bcrypt";
-import { validUser } from "../validator/signin.js";
+import { validUser } from "../validator/signup.js";
 import { MongoServerError } from "mongodb";
 
 export async function signup(req: Request, res: Response) {
