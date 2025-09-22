@@ -1,15 +1,11 @@
-console.log("file runnign 1");
 import * as dotenv from "dotenv";
-console.log("file runnign 2");
 dotenv.config();
-console.log("file running 3");
 import express from "express";
 import mongoose from "mongoose";
 import { signup } from "./middleware/signup.js";
 import type { Request, Response } from "express";
 const app = express();
 app.use(express.json());
-console.log("file running 4");
 
 // --- Routes ---
 app.post("/api/v1/signup", signup);
