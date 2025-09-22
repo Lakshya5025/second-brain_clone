@@ -25,6 +25,6 @@ const linkSchema = new mongoose.Schema({
 });
 
 export const userModel = mongoose.model("user", userSchema);
-export const contentModel = mongoose.model("content", userSchema);
-export const tagModel = mongoose.model("tag", userSchema);
-export const linkModel = mongoose.model("link", userSchema);
+export const contentModel = mongoose.model("content", contentSchema);
+export const tagModel = mongoose.model("tag", tagSchema);
+export const linkModel = mongoose.model("link", linkSchema);
