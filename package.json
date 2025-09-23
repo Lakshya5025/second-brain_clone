@@ -10,7 +10,7 @@
     "dev": "npm run build && npm start"
   },
   "keywords": [],
-  "author": "",
+  "author": "Lakshya Gupta",
   "license": "ISC",
   "description": "",
   "dependencies": {
