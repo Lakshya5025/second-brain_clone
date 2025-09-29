@@ -27,7 +27,7 @@ app.get("/api/v1/brain/:shareLink", (req: Request, res: Response) => {
 });
 
 async function startServer() {
-  if (!process.env.MONGO_URL || !process.env.PORT) {
+  if (!process.env.MONGO_URL || !process.env.PORT || !process.env.SERVER_URL) {
     console.error(
       "Missing required environment variables. Make sure .env file is present and correct."
     );
@@ -40,7 +40,7 @@ async function startServer() {
 
     app.listen(process.env.PORT, () => {
       console.log(
-        `Server is listening on http://localhost:${process.env.PORT}`
+        `Server is listening on ${process.env.SERVER_URL}${process.env.PORT}`
       );
     });
   } catch (err) {
