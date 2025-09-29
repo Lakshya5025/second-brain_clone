@@ -18,7 +18,6 @@ export async function addContent(req: Request, res: Response) {
   }
 
   try {
-    console.log(title, link, type, userId);
     const newContent = new contentModel({
       title,
       link,
@@ -32,8 +31,7 @@ export async function addContent(req: Request, res: Response) {
     if (err instanceof MongooseError.ValidationError) {
       return res.status(400).json({ error: err.message });
     }
-    if (err instanceof Error)
-      console.error("Error in addContent:", err.message);
+    console.error("Error in addContent:", err);
     return res.status(500).json({
       error: "An unexpected server error occurred.",
     });
