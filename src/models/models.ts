@@ -20,8 +20,8 @@ const tagSchema = new mongoose.Schema({
 });
 
 const linkSchema = new mongoose.Schema({
-  hash: { type: String, required: true },
-  userId: { type: Types.ObjectId, required: true },
+  hash: { type: String, required: true, unique: true },
+  contentId: { type: Types.ObjectId, ref: "contents", required: true },
 });
 
 export const userModel = mongoose.model("user", userSchema);
