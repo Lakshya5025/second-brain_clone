@@ -24,6 +24,7 @@ export async function shareLink(req: Request, res: Response) {
       const hash = alreadyPresent.hash;
       const sharableLink = `${process.env.SERVER_URL}/api/v1/brain/${hash}`;
       return res.status(200).json({
+        hash,
         message: sharableLink,
       });
     }
@@ -35,6 +36,7 @@ export async function shareLink(req: Request, res: Response) {
     await newLink.save();
     const sharableLink = `${process.env.SERVER_URl}/api/v1/brain/${hash}`;
     res.status(201).json({
+      hash,
       message: sharableLink,
     });
   } catch (err) {
