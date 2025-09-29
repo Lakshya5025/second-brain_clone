@@ -11,8 +11,8 @@ const contentSchema = new mongoose.Schema({
   link: { type: String, required: true },
   type: { type: String, enum: contentType, required: true },
   title: { type: String, required: true },
-  tags: [{ type: Types.ObjectId, ref: "tags" }],
-  userId: { type: Types.ObjectId, ref: "users", required: true },
+  tags: [{ type: Types.ObjectId, ref: "tag" }],
+  userId: { type: Types.ObjectId, ref: "user", required: true },
 });
 
 const tagSchema = new mongoose.Schema({
@@ -21,7 +21,7 @@ const tagSchema = new mongoose.Schema({
 
 const linkSchema = new mongoose.Schema({
   hash: { type: String, required: true, unique: true },
-  contentId: { type: Types.ObjectId, ref: "contents", required: true },
+  contentId: { type: Types.ObjectId, ref: "content", required: true },
 });
 
 export const userModel = mongoose.model("user", userSchema);
