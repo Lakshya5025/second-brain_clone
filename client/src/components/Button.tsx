@@ -5,6 +5,7 @@ interface ButtonProps {
   text: string;
   startIcon?: ReactElement;
   onClick?: () => void;
+  customCSS?: string;
 }
 
 const varientColor = {
@@ -12,13 +13,22 @@ const varientColor = {
   secondary: "bg-purple-100 text-purple-500",
 };
 
-export function Button({ varient, text, startIcon, onClick }: ButtonProps) {
+export function Button({
+  varient,
+  text,
+  startIcon,
+  onClick,
+  customCSS,
+}: ButtonProps) {
+  let startIconStyle: string;
+  if (startIcon) startIconStyle = "mr-3";
+  else startIconStyle = "";
   return (
     <button
       onClick={onClick}
-      className={`${varientColor[varient]}  font-normal rounded-lg px-3 py-2 hover:cursor-pointer hover:shadow-xl/3 hover:shadow-back-800`}>
+      className={` ${customCSS} ${varientColor[varient]}  font-normal rounded-lg px-3 py-2 hover:cursor-pointer hover:shadow-xl/3 hover:shadow-back-800`}>
       <div className="flex items-center">
-        <div className="mr-3">{startIcon}</div>
+        <div className={startIconStyle}>{startIcon}</div>
         {text}
       </div>
     </button>
