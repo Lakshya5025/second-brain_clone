@@ -32,7 +32,7 @@ export function Card({ link, title, startIcon, description }: CardProps) {
   }
   console.log(videoId);
   return (
-    <div className="bg-white w-[354px] rounded-md border-2 border-black-200 overflow-y-auto max-h-80">
+    <div className="bg-white w-[354px] rounded-md border-2 border-black-200 overflow-y-auto max-h-80 mb-5">
       <div className="flex justify-between px-3 pt-3 items-center ">
         <div className="flex items-center gap-7">
           <div className="text-black-200"> {startIcon}</div>
