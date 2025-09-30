@@ -4,6 +4,7 @@ interface ButtonProps {
   varient: "primary" | "secondary";
   text: string;
   startIcon?: ReactElement;
+  onClick?: () => void;
 }
 
 const varientColor = {
@@ -11,10 +12,11 @@ const varientColor = {
   secondary: "bg-purple-100 text-purple-500",
 };
 
-export function Button({ varient, text, startIcon }: ButtonProps) {
+export function Button({ varient, text, startIcon, onClick }: ButtonProps) {
   return (
     <button
-      className={`${varientColor[varient]} font-normal rounded-lg px-3 py-2`}>
+      onClick={onClick}
+      className={`${varientColor[varient]}  font-normal rounded-lg px-3 py-2 hover:cursor-pointer hover:shadow-xl/3 hover:shadow-back-800`}>
       <div className="flex items-center">
         <div className="mr-3">{startIcon}</div>
         {text}
