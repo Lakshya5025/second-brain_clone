@@ -6,6 +6,7 @@ import { ShareIcon } from "../icons/ShareIcon";
 import { YoutubeIcon } from "../icons/YoutubeIcon";
 import { CreateContentModel } from "../components/CreateContentModel";
 import { SideBar } from "../components/Sidebar";
+import { TwitterIcon } from "../icons/TwitterIcon";
 
 export default function Dashboard() {
   const [showContentModel, setShowContentModel] = useState(false);
@@ -49,7 +50,7 @@ export default function Dashboard() {
             />
             <Card
               link="https://x.com/AtknSolana/status/1972294105523961895"
-              startIcon={<YoutubeIcon />}
+              startIcon={<TwitterIcon />}
               title={"second brain"}
               description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the"
             />
