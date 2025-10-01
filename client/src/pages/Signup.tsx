@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Button } from "../components/Button";
 import { EyeOpen } from "../icons/EyeOpen";
 import { EyeClose } from "../icons/EyeClose";
+import { useNavigate } from "react-router-dom";
+import axios, { AxiosError } from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface InputProps {
   placeholder: string;
@@ -27,13 +30,37 @@ export function Signup() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [passType, setPassType] = useState("password");
-  function onSignup() {
-    console.log(userName, password, email);
-  }
+  const navigate = useNavigate();
+
   function handelVisibility() {
     if (passType == "text") setPassType("password");
     else if (passType == "password") setPassType("text");
   }
+  async function onSignup() {
+    try {
+      const response = await axios.post(`${apiUrl}/signup`, {
+        username: userName,
+        password,
+        email,
+      });
+      console.log(response);
+
+      if (response.status === 201) {
+        navigate("/signin");
+      }
+    } catch (error) {
+      if (
+        error instanceof AxiosError &&
+        error.message == "Request failed with status code 409"
+      ) {
+        alert("user already exist");
+      } else if (error instanceof AxiosError) {
+        console.error("Login failed:", error.response?.data.message);
+        alert("Failed to create user");
+      }
+    }
+  }
+
   return (
     <div className="bg-purple-100 h-screen w-screen  flex justify-center items-center">
       <div className="bg-white w-80 rounded-lg px-5 py-7">
