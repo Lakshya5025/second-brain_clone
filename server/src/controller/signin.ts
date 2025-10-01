@@ -9,41 +9,49 @@ export async function signin(req: Request, res: Response) {
     console.error("JWT_SECRET environment variable not set!");
     return res.status(500).json({ message: "Server configuration error." });
   }
-  const isValidDetils = signinValidator.safeParse(req.body);
-  if (isValidDetils.success) {
-    const { username, password } = req.body;
-    try {
-      const user = await userModel.findOne({ username });
-      if (!user)
-        return res.json({
-          message: "user not found",
-        });
+  const validationResult = signinValidator.safeParse(req.body);
 
-      const isValid: boolean = await bcrypt.compare(password, user.password);
-      if (!isValid) {
-        return res.json({ message: "user not found" });
-      }
-      const payload = {
-        userId: user._id,
-        username: user.username,
-        email: user.email,
-      };
+  if (!validationResult.success) {
+    return res.status(400).json({
+      message: "Invalid input.",
+      errors: validationResult.error.flatten().fieldErrors,
+    });
+  }
+  const { username, password } = validationResult.data;
 
-      const token = await jwt.sign(payload, jwtSecret);
-      const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
-      res
-        .cookie("token", token, {
-          maxAge: oneDayInMilliseconds,
-          httpOnly: true,
-          secure: true,
-          path: "/",
-        })
-        .json({
-          message: "login success",
-        });
-    } catch (err) {
-      console.log(err);
-      res.json({ message: "err" });
+  try {
+    const user = await userModel.findOne({ username });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({
+        message: "Invalid username or password.",
+      });
     }
+    const payload = {
+      userId: user._id,
+      username: user.username,
+      email: user.email,
+    };
+
+    const token = jwt.sign(payload, jwtSecret, { expiresIn: "1d" });
+
+    const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+
+    return res
+      .cookie("token", token, {
+        maxAge: oneDayInMilliseconds,
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        path: "/",
+        sameSite: "strict",
+      })
+      .status(200)
+      .json({
+        message: "Login successful.",
+      });
+  } catch (err) {
+    console.error("Error during sign-in:", err);
+    return res
+      .status(500)
+      .json({ message: "An internal server error occurred." });
   }
 }
