@@ -1,5 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
-const contentType = ["image", "article", "video", "audio"];
+const contentType = ["image", "doc", "video", "audio", "tweet"];
 
 const userSchema = new mongoose.Schema({
   username: { type: String, required: true },
