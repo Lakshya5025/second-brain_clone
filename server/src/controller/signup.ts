@@ -3,43 +3,57 @@ import { userModel } from "../models/models.js";
 import bcrypt from "bcrypt";
 import { validUser } from "../validator/signup.js";
 import { MongoServerError } from "mongodb";
-
+import { z } from "zod";
 export async function signup(req: Request, res: Response) {
   const salt = process.env.SALT;
   if (!salt) {
     console.error("SALT environment variable not set!");
     return res.status(500).json({ message: "Server configuration error." });
   }
+
   const saltRounds = parseInt(salt, 10);
-  const isValidUser = validUser.safeParse(req.body);
-  if (isValidUser.success) {
-    try {
-      let { username, password, email } = req.body;
-      const hashedPassword: string = await bcrypt.hash(password, saltRounds);
-      const newUser = new userModel({
-        username,
-        password: hashedPassword,
-        email,
-      });
-      await newUser.save();
-      res.json({
-        message: "success",
-      });
-    } catch (err) {
-      if (err instanceof MongoServerError && err.code == 11000) {
-        return res.json({
-          message: "email already used",
-        });
-      }
-      res.status(500).json({
-        message: "failed to create user.",
+  if (isNaN(saltRounds)) {
+    console.error("SALT environment variable is not a valid number!");
+    return res.status(500).json({ message: "Server configuration error." });
+  }
+
+  const validationResult = validUser.safeParse(req.body);
+  if (!validationResult.success) {
+    return res.status(400).json({
+      message: "Invalid input.",
+      errors: z.treeifyError(validationResult.error),
+    });
+  }
+
+  try {
+    const { username, password, email } = validationResult.data;
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const newUser = new userModel({
+      username,
+      password: hashedPassword,
+      email,
+    });
+
+    await newUser.save();
+
+    return res.status(201).json({
+      message: "User created successfully.",
+      user: {
+        username: newUser.username,
+        email: newUser.email,
+      },
+    });
+  } catch (err) {
+    if (err instanceof MongoServerError && err.code === 11000) {
+      return res.status(409).json({
+        message: "Username or email is already in use.",
       });
     }
-  } else {
-    const errorMessage = isValidUser.error.issues
-      .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
-      .join(". ");
-
-    return res.status(400).json({ message: `Invalid input. ${errorMessage}` });
+    console.error("Error during user creation:", err);
+    return res.status(500).json({
+      message: "Failed to create user due to a server error.",
+    });
   }
 }
