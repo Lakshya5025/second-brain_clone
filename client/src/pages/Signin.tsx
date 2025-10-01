@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/Button";
 import { EyeOpen } from "../icons/EyeOpen";
 import { EyeClose } from "../icons/EyeClose";
+import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface InputProps {
   placeholder: string;
@@ -26,9 +29,30 @@ export function Signin() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [passType, setPassType] = useState("password");
-  function onSignup() {
-    console.log(userName, password);
+  const navigate = useNavigate();
+  async function onSignin() {
+    try {
+      // 3. Make the API request
+      const response = await axios.post(
+        `${apiUrl}/signin`,
+        {
+          username: userName,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
+      alert("Invalid username or password.");
+    }
   }
+
   function handelVisibility() {
     if (passType == "text") setPassType("password");
     else if (passType == "password") setPassType("text");
@@ -53,7 +77,7 @@ export function Signin() {
         </div>
         <div className="flex mt-7 justify-center">
           <Button
-            onClick={onSignup}
+            onClick={onSignin}
             varient="primary"
             customCSS="w-full flex justify-center"
             text="Submit"
