@@ -4,7 +4,7 @@ import { contentModel, linkModel } from "../models/models.js";
 
 export async function shareLink(req: Request, res: Response) {
   try {
-    const contentId = req.params.id;
+    const contentId = req.body.id;
     //@ts-ignore
     const userId = req.user.userId;
     const content = await contentModel.findOne({
