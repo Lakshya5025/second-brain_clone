@@ -6,6 +6,7 @@ import { Card } from "../components/Card";
 import { PlusIcon } from "../icons/PlusIcon";
 import { CreateContentModel } from "../components/CreateContentModel";
 import { SideBar } from "../components/Sidebar";
+import { useMemo } from "react";
 
 interface ContentItem {
   _id: string;
@@ -21,7 +22,8 @@ export default function Dashboard() {
   const [contents, setContents] = useState<ContentItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [visibleContentType, setVisibleContentType] = useState("");
+  console.log(visibleContentType);
   useEffect(() => {
     const fetchContent = async () => {
       try {
@@ -41,6 +43,13 @@ export default function Dashboard() {
     fetchContent();
   }, [updateUI]);
 
+  const filteredContent = useMemo(() => {
+    if (visibleContentType === "") {
+      return contents;
+    }
+    return contents.filter((e) => e.type === visibleContentType);
+  }, [visibleContentType, contents]);
+
   let lowOpacity: string;
   if (showContentModel) lowOpacity = "opacity-60";
   else lowOpacity = "";
@@ -51,13 +60,12 @@ export default function Dashboard() {
           "flex jusify-between relative  h-screen w-screen " + lowOpacity
         }>
         <div className=" h-screen basis-1/4 w-full p-6">
-          <SideBar />
+          <SideBar setVisibleContentType={setVisibleContentType} />
         </div>
         <div className="bg-grey-200 h-screen basix-3/4 w-full px-15">
           <div className="flex justify-between items-center  py-10">
             <div className="text-3xl font-bold">All Brains</div>
             <div className="flex">
-              <div className="mr-5"></div>
               <Button
                 text="Add Content"
                 startIcon={<PlusIcon />}
@@ -73,8 +81,8 @@ export default function Dashboard() {
               <p className="text-red-500">{error}</p>
             ) : (
               <>
-                {contents.length > 0 ? (
-                  contents.map((item) => (
+                {filteredContent.length > 0 ? (
+                  filteredContent.map((item) => (
                     <Card
                       type={item.type}
                       updateUI={updateUI}
