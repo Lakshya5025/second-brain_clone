@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Cross } from "../icons/Cross";
 import { Button } from "./Button";
+import axios from "axios";
+const apiUrl = import.meta.env.VITE_API_URL;
 
 interface InputProps {
   placeholder: string;
@@ -72,6 +74,16 @@ export function CreateContentModel({ onClose }: { onClose: () => void }) {
     console.log("Sending data to backend:", payload);
 
     try {
+      const response = await axios.post(
+        `${apiUrl}/content`,
+        {
+          ...payload,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(response.data);
       alert("Content submitted successfully! (Check console for data)");
       onClose();
     } catch (error) {
