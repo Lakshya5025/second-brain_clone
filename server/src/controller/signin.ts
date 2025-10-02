@@ -39,7 +39,6 @@ export async function signin(req: Request, res: Response) {
     return res
       .cookie("token", token, {
         maxAge: oneDayInMilliseconds,
-        httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         path: "/",
         sameSite: "strict",
