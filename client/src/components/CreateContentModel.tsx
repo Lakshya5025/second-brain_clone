@@ -89,6 +89,7 @@ export function CreateContentModel({ onClose }: { onClose: () => void }) {
       case "video":
       case "doc":
       case "audio":
+      case "tweet":
         return (
           <>
             <Input
@@ -111,23 +112,7 @@ export function CreateContentModel({ onClose }: { onClose: () => void }) {
             />
           </>
         );
-      case "tweet":
-        return (
-          <>
-            <Input
-              placeholder="Link to Tweet"
-              name="link"
-              value={formData.link}
-              onChange={handleInputChange}
-            />
-            <Input
-              placeholder="Description (optional)"
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-            />
-          </>
-        );
+
       default:
         return (
           <div className="text-center text-gray-400 my-10">
