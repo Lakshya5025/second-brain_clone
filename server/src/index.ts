@@ -4,7 +4,6 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import mongoose from "mongoose";
 import { signup } from "./controller/signup.js";
-import type { Request, Response } from "express";
 import { signin } from "./controller/signin.js";
 import { auth } from "./middleware/auth.js";
 import { addContent } from "./controller/addContent.js";
@@ -29,7 +28,7 @@ app.post("/api/v1/signin", signin);
 app.post("/api/v1/content", auth, addContent);
 app.get("/api/v1/content", auth, getContent);
 app.delete("/api/v1/content/:id", auth, deleteContent);
-app.post("/api/v1/brain/share/:id", auth, shareLink);
+app.post("/api/v1/brain/share", auth, shareLink);
 app.get("/api/v1/brain/:shareLink", getSharedContent);
 
 async function startServer() {
