@@ -49,12 +49,12 @@ interface FormData {
 
 export function CreateContentModel({
   onClose,
-  setNewDataAdded,
-  newDataAdded,
+  setUpdateUI,
+  updateUI,
 }: {
   onClose: () => void;
-  newDataAdded: boolean;
-  setNewDataAdded: (v: boolean) => void;
+  updateUI: boolean;
+  setUpdateUI: (v: boolean) => void;
 }) {
   const [activeType, setActiveType] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
@@ -92,7 +92,7 @@ export function CreateContentModel({
         }
       );
       console.log(response.data);
-      setNewDataAdded(!newDataAdded);
+      setUpdateUI(!updateUI);
       onClose();
     } catch (error) {
       console.error("Failed to submit content:", error);
