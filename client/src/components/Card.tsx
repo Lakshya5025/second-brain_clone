@@ -9,6 +9,7 @@ import { TwitterIcon } from "../icons/TwitterIcon";
 import { ImageIcon } from "../icons/ImageIcon";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { LinkIcon } from "../icons/LinkIcon";
+import { ShareModal } from "./ShareModel";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 type ContentType = "image" | "doc" | "video" | "audio" | "tweet";
@@ -121,7 +122,27 @@ export function Card({
   };
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string | null>(null);
-
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [sharableLink, setSharableLink] = useState<string>("");
+  async function handelShare() {
+    setIsShareModalOpen(true);
+    console.log(id, apiUrl);
+    try {
+      const response = await axios.post(
+        `${apiUrl}/brain/share`,
+        { id },
+        {
+          withCredentials: true,
+        }
+      );
+      setSharableLink(response.data.message);
+      console.log("link created Successfully");
+    } catch (err) {
+      setSharableLink("Unable to create link");
+      console.log("error creating link ", err);
+    }
+    // app.post("/api/v1/brain/share/:id", auth, shareLink);
+  }
   async function handleDeleteBtn() {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this content?"
@@ -152,7 +173,9 @@ export function Card({
           <div className="font-medium">{title}</div>
         </div>
         <div className="flex gap-4">
-          <div className="text-black-200 hover:cursor-pointer">
+          <div
+            className="text-black-200 hover:cursor-pointer "
+            onClick={handelShare}>
             {<ShareIcon />}
           </div>
           <div
@@ -176,6 +199,12 @@ export function Card({
       </div>
 
       <div className="px-3 pb-3">{description}</div>
+      {isShareModalOpen && (
+        <ShareModal
+          link={sharableLink}
+          onClose={() => setIsShareModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
