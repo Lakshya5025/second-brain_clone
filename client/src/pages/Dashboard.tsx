@@ -1,18 +1,12 @@
 import { useEffect, useState } from "react";
-import axios from "axios"; // Step 1: Import axios
+import axios from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { PlusIcon } from "../icons/PlusIcon";
 import { ShareIcon } from "../icons/ShareIcon";
-import { YoutubeIcon } from "../icons/YoutubeIcon";
 import { CreateContentModel } from "../components/CreateContentModel";
 import { SideBar } from "../components/Sidebar";
-import { TwitterIcon } from "../icons/TwitterIcon";
-import { DocIcon } from "../icons/DocIcon";
-import { LinkIcon } from "../icons/LinkIcon";
-import { ImageIcon } from "../icons/ImageIcon";
-import { SpeakerIcon } from "../icons/SpeakerIcon";
 
 interface ContentItem {
   _id: string;
@@ -22,25 +16,9 @@ interface ContentItem {
   type: "image" | "doc" | "video" | "audio" | "tweet";
 }
 
-const getContentIcon = (type: ContentItem["type"]) => {
-  switch (type) {
-    case "video":
-      return <YoutubeIcon />;
-    case "tweet":
-      return <TwitterIcon />;
-    case "doc":
-      return <DocIcon />;
-    case "image":
-      return <ImageIcon />;
-    case "audio":
-      return <SpeakerIcon />;
-    default:
-      return <LinkIcon />;
-  }
-};
 export default function Dashboard() {
   const [showContentModel, setShowContentModel] = useState(false);
-  const [newDataAdded, setNewDataAdded] = useState(false);
+  const [updateUI, setUpdateUI] = useState(false);
   const [contents, setContents] = useState<ContentItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -62,7 +40,7 @@ export default function Dashboard() {
     };
 
     fetchContent();
-  }, [newDataAdded]);
+  }, [updateUI]);
 
   let lowOpacity: string;
   if (showContentModel) lowOpacity = "opacity-60";
@@ -95,7 +73,6 @@ export default function Dashboard() {
               />
             </div>
           </div>
-          {/* Step 5: Replace static cards with dynamic rendering */}
           <div className="grid grid-cols-3 py-10 gap-6">
             {isLoading ? (
               <p>Loading your notes...</p>
@@ -106,9 +83,12 @@ export default function Dashboard() {
                 {contents.length > 0 ? (
                   contents.map((item) => (
                     <Card
-                      key={item._id} // Use a unique key for each item
+                      type={item.type}
+                      updateUI={updateUI}
+                      setUpdateUI={setUpdateUI}
+                      id={item._id}
+                      key={item._id}
                       link={item.link}
-                      startIcon={getContentIcon(item.type)}
                       title={item.title}
                       description={item.description}
                     />
@@ -126,8 +106,8 @@ export default function Dashboard() {
       </div>
       {showContentModel ? (
         <CreateContentModel
-          newDataAdded={newDataAdded}
-          setNewDataAdded={setNewDataAdded}
+          updateUI={updateUI}
+          setUpdateUI={setUpdateUI}
           onClose={() => setShowContentModel(false)}
         />
       ) : null}
