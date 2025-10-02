@@ -7,6 +7,7 @@ import { PlusIcon } from "../icons/PlusIcon";
 import { CreateContentModel } from "../components/CreateContentModel";
 import { SideBar } from "../components/Sidebar";
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ContentItem {
   _id: string;
@@ -17,13 +18,21 @@ interface ContentItem {
 }
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const [showContentModel, setShowContentModel] = useState(false);
   const [updateUI, setUpdateUI] = useState(false);
   const [contents, setContents] = useState<ContentItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [visibleContentType, setVisibleContentType] = useState("");
-  console.log(visibleContentType);
+  const handleLogout = async () => {
+    try {
+      await axios.post(`${apiUrl}/logout`, {}, { withCredentials: true });
+      navigate("/signin");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   useEffect(() => {
     const fetchContent = async () => {
       try {
@@ -71,6 +80,12 @@ export default function Dashboard() {
                 startIcon={<PlusIcon />}
                 varient="primary"
                 onClick={() => setShowContentModel((v) => !v)}
+              />
+              <Button
+                text="Logout"
+                varient="secondary"
+                onClick={handleLogout}
+                customCSS="ml-4"
               />
             </div>
           </div>
