@@ -11,6 +11,7 @@ import { getSharedContent } from "./controller/getSharedContent.js";
 import { deleteContent } from "./controller/deleteContent.js";
 import { shareLink } from "./controller/createLink.js";
 import { getContent } from "./controller/getContent.js";
+import { logout } from "./controller/logout.js";
 import cors from "cors";
 const app = express();
 app.use(express.json());
@@ -30,6 +31,7 @@ app.get("/api/v1/content", auth, getContent);
 app.delete("/api/v1/content/:id", auth, deleteContent);
 app.post("/api/v1/brain/share", auth, shareLink);
 app.get("/api/v1/brain/:shareLink", getSharedContent);
+app.post("/api/v1/logout", logout);
 
 async function startServer() {
   if (!process.env.MONGO_URL || !process.env.PORT || !process.env.SERVER_URL) {
@@ -44,9 +46,7 @@ async function startServer() {
     console.log("DB connected successfully");
 
     app.listen(process.env.PORT, () => {
-      console.log(
-        `Server is listening on ${process.env.SERVER_URL}${process.env.PORT}`
-      );
+      console.log(`Server is listening on ${process.env.SERVER_URL}`);
     });
   } catch (err) {
     console.error("Failed to connect to the database:");
