@@ -47,7 +47,15 @@ interface FormData {
   description: string;
 }
 
-export function CreateContentModel({ onClose }: { onClose: () => void }) {
+export function CreateContentModel({
+  onClose,
+  setNewDataAdded,
+  newDataAdded,
+}: {
+  onClose: () => void;
+  newDataAdded: boolean;
+  setNewDataAdded: (v: boolean) => void;
+}) {
   const [activeType, setActiveType] = useState<string | null>(null);
   const [formData, setFormData] = useState<FormData>({
     title: "",
@@ -84,7 +92,7 @@ export function CreateContentModel({ onClose }: { onClose: () => void }) {
         }
       );
       console.log(response.data);
-      alert("Content submitted successfully! (Check console for data)");
+      setNewDataAdded(!newDataAdded);
       onClose();
     } catch (error) {
       console.error("Failed to submit content:", error);
