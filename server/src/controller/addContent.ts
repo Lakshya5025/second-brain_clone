@@ -3,7 +3,7 @@ import { contentModel } from "../models/models.js";
 import { Error as MongooseError } from "mongoose";
 
 export async function addContent(req: Request, res: Response) {
-  const { title, link, type } = req.body;
+  const { title, link, type, description } = req.body;
   //@ts-ignore
   const userId = req.user?.userId;
 
@@ -11,7 +11,7 @@ export async function addContent(req: Request, res: Response) {
     return res.status(401).json({ error: "Unauthorized: User ID is missing." });
   }
 
-  if (!title || !link || !type) {
+  if (!title || !link || !type || !description) {
     return res.status(400).json({
       error: "Title, link, and type are all required fields.",
     });
@@ -23,6 +23,7 @@ export async function addContent(req: Request, res: Response) {
       link,
       type,
       userId,
+      description,
     });
 
     const savedContent = await newContent.save();
