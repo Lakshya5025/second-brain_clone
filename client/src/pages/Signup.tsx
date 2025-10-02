@@ -3,6 +3,7 @@ import { Button } from "../components/Button";
 import { EyeOpen } from "../icons/EyeOpen";
 import { EyeClose } from "../icons/EyeClose";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios, { AxiosError } from "axios";
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -64,6 +65,9 @@ export function Signup() {
   return (
     <div className="bg-purple-100 h-screen w-screen  flex justify-center items-center">
       <div className="bg-white w-80 rounded-lg px-5 py-7">
+        <div className="flex justify-center text-xl mb-2 font-semibold">
+          Signup
+        </div>
         <div className="relative">
           <Input placeholder="Email" setValue={setEmail} />
           <Input placeholder="Username" setValue={setUserName} />
@@ -87,6 +91,14 @@ export function Signup() {
             customCSS="w-full flex justify-center"
             text="Submit"
           />
+        </div>
+        <div className="text-center mt-4">
+          <p>
+            Already have an account?{" "}
+            <Link to="/signin" className="text-purple-500 hover:underline">
+              Sign in
+            </Link>
+          </p>
         </div>
       </div>
     </div>
