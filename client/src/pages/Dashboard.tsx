@@ -4,7 +4,6 @@ const apiUrl = import.meta.env.VITE_API_URL;
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { PlusIcon } from "../icons/PlusIcon";
-import { ShareIcon } from "../icons/ShareIcon";
 import { CreateContentModel } from "../components/CreateContentModel";
 import { SideBar } from "../components/Sidebar";
 
@@ -56,15 +55,9 @@ export default function Dashboard() {
         </div>
         <div className="bg-grey-200 h-screen basix-3/4 w-full px-15">
           <div className="flex justify-between items-center  py-10">
-            <div className="text-3xl font-bold">All Notes</div>
+            <div className="text-3xl font-bold">All Brains</div>
             <div className="flex">
-              <div className="mr-5">
-                <Button
-                  text="Share Brain"
-                  startIcon={<ShareIcon />}
-                  varient="secondary"
-                />
-              </div>
+              <div className="mr-5"></div>
               <Button
                 text="Add Content"
                 startIcon={<PlusIcon />}
