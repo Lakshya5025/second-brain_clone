@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios"; // Step 1: Import axios
+const apiUrl = import.meta.env.VITE_API_URL;
 import { Button } from "../components/Button";
 import { Card } from "../components/Card";
 import { PlusIcon } from "../icons/PlusIcon";
@@ -7,9 +9,61 @@ import { YoutubeIcon } from "../icons/YoutubeIcon";
 import { CreateContentModel } from "../components/CreateContentModel";
 import { SideBar } from "../components/Sidebar";
 import { TwitterIcon } from "../icons/TwitterIcon";
+import { DocIcon } from "../icons/DocIcon";
+import { LinkIcon } from "../icons/LinkIcon";
+import { ImageIcon } from "../icons/ImageIcon";
+import { SpeakerIcon } from "../icons/SpeakerIcon";
 
+interface ContentItem {
+  _id: string;
+  title: string;
+  description: string;
+  link: string;
+  type: "image" | "doc" | "video" | "audio" | "tweet";
+}
+
+const getContentIcon = (type: ContentItem["type"]) => {
+  switch (type) {
+    case "video":
+      return <YoutubeIcon />;
+    case "tweet":
+      return <TwitterIcon />;
+    case "doc":
+      return <DocIcon />;
+    case "image":
+      return <ImageIcon />;
+    case "audio":
+      return <SpeakerIcon />;
+    default:
+      return <LinkIcon />;
+  }
+};
 export default function Dashboard() {
   const [showContentModel, setShowContentModel] = useState(false);
+  const [newDataAdded, setNewDataAdded] = useState(false);
+  const [contents, setContents] = useState<ContentItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await axios.get(`${apiUrl}/content`, {
+          withCredentials: true,
+        });
+        setContents(response.data.message);
+        setError(null);
+      } catch (err) {
+        setError("Failed to fetch content. Please try again later.");
+        console.error(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContent();
+  }, [newDataAdded]);
+
   let lowOpacity: string;
   if (showContentModel) lowOpacity = "opacity-60";
   else lowOpacity = "";
@@ -41,24 +95,41 @@ export default function Dashboard() {
               />
             </div>
           </div>
-          <div className="grid grid-cols-3 py-10">
-            <Card
-              link="https://www.youtube.com/watch?v=54w5Okqb4c0"
-              startIcon={<YoutubeIcon />}
-              title={"First brain"}
-              description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the"
-            />
-            <Card
-              link="https://x.com/AtknSolana/status/1972294105523961895"
-              startIcon={<TwitterIcon />}
-              title={"second brain"}
-              description="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the"
-            />
+          {/* Step 5: Replace static cards with dynamic rendering */}
+          <div className="grid grid-cols-3 py-10 gap-6">
+            {isLoading ? (
+              <p>Loading your notes...</p>
+            ) : error ? (
+              <p className="text-red-500">{error}</p>
+            ) : (
+              <>
+                {contents.length > 0 ? (
+                  contents.map((item) => (
+                    <Card
+                      key={item._id} // Use a unique key for each item
+                      link={item.link}
+                      startIcon={getContentIcon(item.type)}
+                      title={item.title}
+                      description={item.description}
+                    />
+                  ))
+                ) : (
+                  <p>
+                    You haven't added any content yet. Click "Add Content" to
+                    start!
+                  </p>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
       {showContentModel ? (
-        <CreateContentModel onClose={() => setShowContentModel(false)} />
+        <CreateContentModel
+          newDataAdded={newDataAdded}
+          setNewDataAdded={setNewDataAdded}
+          onClose={() => setShowContentModel(false)}
+        />
       ) : null}
     </div>
   );
