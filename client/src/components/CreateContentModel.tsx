@@ -2,19 +2,30 @@ import { useState } from "react";
 import { Cross } from "../icons/Cross";
 import { Button } from "./Button";
 
+interface InputProps {
+  placeholder: string;
+  name: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+}
+
 function Input({
   placeholder,
   type = "text",
-}: {
-  placeholder: string;
-  type?: string;
-}) {
+  name,
+  value,
+  onChange,
+}: InputProps) {
   return (
     <div className="my-2">
       <input
-        className="bg-grey-200 w-full rounded-md py-2 pl-2"
+        className="bg-grey-200 w-full rounded-md py-2 pl-2 text-black"
         type={type}
         placeholder={placeholder}
+        name={name}
+        value={value}
+        onChange={onChange}
       />
     </div>
   );
@@ -27,8 +38,51 @@ const buttonData = [
   { text: "audio", type: "audio" },
   { text: "tweet", type: "tweet" },
 ];
+
+interface FormData {
+  title: string;
+  link: string;
+  description: string;
+}
+
 export function CreateContentModel({ onClose }: { onClose: () => void }) {
   const [activeType, setActiveType] = useState<string | null>(null);
+  const [formData, setFormData] = useState<FormData>({
+    title: "",
+    link: "",
+    description: "",
+  });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  const handleSubmit = async () => {
+    if (!activeType) {
+      alert("Please select a content type.");
+      return;
+    }
+    const payload = {
+      type: activeType,
+      ...formData,
+    };
+
+    console.log("Sending data to backend:", payload);
+
+    try {
+      alert("Content submitted successfully! (Check console for data)");
+      onClose();
+    } catch (error) {
+      console.error("Failed to submit content:", error);
+      alert("There was an error submitting your content.");
+    }
+  };
+  const handleTypeSelect = (type: string) => {
+    setActiveType(type);
+    setFormData({ title: "", link: "", description: "" });
+  };
   const renderInputs = () => {
     switch (activeType) {
       case "image":
@@ -37,16 +91,41 @@ export function CreateContentModel({ onClose }: { onClose: () => void }) {
       case "audio":
         return (
           <>
-            <Input placeholder="Title" />
-            <Input placeholder="Link (e.g., https://...)" />
-            <Input placeholder="Description" />
+            <Input
+              placeholder="Title"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+            />
+            <Input
+              placeholder="Link (e.g., https://...)"
+              name="link"
+              value={formData.link}
+              onChange={handleInputChange}
+            />
+            <Input
+              placeholder="Description"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+            />
           </>
         );
       case "tweet":
         return (
           <>
-            <Input placeholder="Link to Tweet" />
-            <Input placeholder="Description (optional)" />
+            <Input
+              placeholder="Link to Tweet"
+              name="link"
+              value={formData.link}
+              onChange={handleInputChange}
+            />
+            <Input
+              placeholder="Description (optional)"
+              name="description"
+              value={formData.description}
+              onChange={handleInputChange}
+            />
           </>
         );
       default:
@@ -75,7 +154,7 @@ export function CreateContentModel({ onClose }: { onClose: () => void }) {
                 varient="primary"
                 text={button.text}
                 isActive={activeType === button.type}
-                onClick={() => setActiveType(button.type)}
+                onClick={() => handleTypeSelect(button.type)}
               />
             ))}
           </div>
@@ -86,6 +165,7 @@ export function CreateContentModel({ onClose }: { onClose: () => void }) {
                 varient="primary"
                 customCSS="w-full flex justify-center"
                 text="Submit"
+                onClick={handleSubmit}
               />
             </div>
           )}
