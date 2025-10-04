@@ -13,6 +13,8 @@ import { shareLink } from "./controller/createLink.js";
 import { getContent } from "./controller/getContent.js";
 import { logout } from "./controller/logout.js";
 import cors from "cors";
+import { changePassword, updateUser } from "./controller/user.js";
+import { updateContent } from "./controller/updateContent.js";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
@@ -29,10 +31,12 @@ app.post("/api/v1/signin", signin);
 app.post("/api/v1/content", auth, addContent);
 app.get("/api/v1/content", auth, getContent);
 app.delete("/api/v1/content/:id", auth, deleteContent);
+app.put("/api/v1/content/:id", auth, updateContent);
 app.post("/api/v1/brain/share", auth, shareLink);
 app.get("/api/v1/brain/:shareLink", getSharedContent);
 app.post("/api/v1/logout", logout);
-
+app.put("/api/v1/user", auth, updateUser);
+app.post("/api/v1/user/password", auth, changePassword);
 async function startServer() {
   if (!process.env.MONGO_URL || !process.env.PORT || !process.env.SERVER_URL) {
     console.error(
