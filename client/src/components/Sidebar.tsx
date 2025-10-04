@@ -5,7 +5,6 @@ import { TwitterIcon } from "../icons/TwitterIcon";
 import { YoutubeIcon } from "../icons/YoutubeIcon";
 import { Logo } from "./Logo";
 import { SideBarItem } from "./SideBarItem";
-// const contentType = ["image", "doc", "video", "audio", "tweet"];
 
 export function SideBar({
   setVisibleContentType,
@@ -14,8 +13,8 @@ export function SideBar({
 }) {
   return (
     <div>
-      <Logo />
-      <div className="mt-15">
+      <Logo setVisibleContentType={setVisibleContentType} />
+      <div className="mt-15 z-1">
         <SideBarItem
           type="tweet"
           setVisibleContentType={setVisibleContentType}
