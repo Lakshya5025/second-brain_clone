@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
-import { contentModel } from "../models/models.js";
+import { contentModel, tagModel } from "../models/models.js";
 import { Error as MongooseError } from "mongoose";
 
 export async function addContent(req: Request, res: Response) {
-  const { title, link, type, description } = req.body;
+  const { title, link, type, description, tags } = req.body;
   //@ts-ignore
   const userId = req.user?.userId;
 
@@ -18,12 +18,24 @@ export async function addContent(req: Request, res: Response) {
   }
 
   try {
+    const tagIds = await Promise.all(
+      (tags || []).map(async (tag: string) => {
+        let tagDoc = await tagModel.findOne({ title: tag });
+        if (!tagDoc) {
+          tagDoc = new tagModel({ title: tag });
+          await tagDoc.save();
+        }
+        return tagDoc._id;
+      })
+    );
+
     const newContent = new contentModel({
       title,
       link,
       type,
       userId,
       description,
+      tags: tagIds,
     });
 
     const savedContent = await newContent.save();
