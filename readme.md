@@ -1,19 +1,39 @@
-# **Brainly \- A Full-Stack Application**
+# **Brainly \- Your Second Brain in the Cloud**
 
-This is a full-stack "Brainly" application built with a **React** frontend and a **Node.js**, **Express**, and **TypeScript** backend. It provides user authentication and a comprehensive structure for managing and storing different types of content. This project uses **MongoDB** as its database.
+Brainly is a powerful, full-stack application designed to be your personal digital brain. It allows you to effortlessly save, categorize, and access various types of content from around the web. Whether it's an inspiring image, a must-read document, a captivating video, a thought-provoking tweet, or an informative audio clip, Brainly provides a centralized hub for all your digital discoveries.
 
----
+## **Features ✨**
 
-## **Features**
+- **Seamless Content Management**: Easily add, view, update, and delete your saved content with a user-friendly interface.
+- **Versatile Content Support**: Save a wide range of content types, including images, documents, videos, audio files, and even tweets.
+- **Secure User Authentication**: Your digital brain is for your eyes only. Brainly uses secure user authentication with JWT (JSON Web Tokens) to protect your data.
+- **Robust Security**: Passwords are securely hashed using **bcrypt**, ensuring that your account is always protected.
+- **Effortless Sharing**: Share your saved content with others by generating unique, shareable links.
+- **Powerful Search and Filtering**: Quickly find what you're looking for with a comprehensive search and filtering system. You can search by title or description, and sort your content by date or title.
+- **Organize with Tags**: Use tags to categorize your content and keep your digital brain neatly organized.
+- **User Profile Management**: Update your username, email, and password in a dedicated profile section.
+- **Built with TypeScript**: The entire application is built with TypeScript, providing type safety and improved code quality for a more reliable and maintainable application.
 
-- **Full-Stack Application**: A complete solution with a modern frontend and a robust backend.
-- **User Authentication**: Secure user authentication using JWT (JSON Web Tokens).
-- **Password Hashing**: Passwords are hashed using **bcrypt** before being stored in the database for enhanced security.
-- **Content Management**: Functionality to add, view, and delete content.
-- **Content Sharing**: Ability to generate shareable links for your content.
-- **Validation**: Input validation for request bodies using **zod** for robust data integrity.
-- **Database Modeling**: Clear and structured data models for users, content, tags, and links using **Mongoose**.
-- **TypeScript**: The entire codebase is written in TypeScript for better code quality, type safety, and maintainability.
+## **Tech Stack 💻**
+
+### **Frontend**
+
+- **React**: A declarative, efficient, and flexible JavaScript library for building user interfaces.
+- **Vite**: A next-generation frontend tooling that provides a faster and leaner development experience.
+- **Tailwind CSS**: A utility-first CSS framework for rapidly building custom user interfaces.
+- **Axios**: A promise-based HTTP client for the browser and Node.js.
+- **React Router**: A standard library for routing in React.
+
+### **Backend**
+
+- **Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine.
+- **Express**: A minimal and flexible Node.js web application framework that provides a robust set of features for web and mobile applications.
+- **MongoDB**: A cross-platform document-oriented database program.
+- **Mongoose**: An elegant MongoDB object modeling tool for Node.js.
+- **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript.
+- **JWT (JSON Web Tokens)**: A compact, URL-safe means of representing claims to be transferred between two parties.
+- **Bcrypt**: A library for hashing passwords.
+- **Zod**: A TypeScript-first schema declaration and validation library.
 
 ---
 
@@ -38,14 +58,14 @@ brainly/
 
 - **client/**: This directory contains the frontend of the application, built with React and Vite.
 - **server/**: This directory contains the backend of the application, built with Node.js and Express.
-  - **src/controller/**: This directory contains the controllers, which are responsible for handling the business logic for incoming requests and sending back responses.
+  - **src/controller/**: This directory contains the controllers, which handle the business logic for incoming requests and send back responses.
   - **src/middleware/**: This directory contains the middleware functions, such as the authentication middleware.
   - **src/models/**: This directory contains the Mongoose schemas and models for the different collections in the MongoDB database.
-  - **src/validator/**: This directory contains the zod schemas for validating the incoming request bodies to ensure data consistency.
+  - **src/validator/**: This directory contains the Zod schemas for validating incoming request bodies to ensure data consistency.
 
 ---
 
-## **Getting Started**
+## **Getting Started 🚀**
 
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
 
@@ -104,7 +124,7 @@ The client will be available at http://localhost:5173 (or another port if 5173 i
 
 ---
 
-## **API Endpoints**
+## **API Endpoints 🌐**
 
 The following are the API endpoints available in this project:
 
@@ -113,9 +133,12 @@ The following are the API endpoints available in this project:
 - **POST /api/v1/content**: Adds new content.
 - **GET /api/v1/content**: Fetches content for the logged-in user.
 - **DELETE /api/v1/content/:id**: Deletes a specific piece of content.
+- **PUT /api/v1/content/:id**: Updates a specific piece of content.
 - **POST /api/v1/brain/share**: Generates a shareable link for a piece of content.
 - **GET /api/v1/brain/:shareLink**: Accesses shared content.
 - **POST /api/v1/logout**: Logs out the current user.
+- **PUT /api/v1/user**: Updates user information (username and email).
+- **POST /api/v1/user/password**: Changes the user's password.
 
 ---
 
@@ -131,36 +154,13 @@ To run the server, you will need to create a .env file in the server directory a
 
 ---
 
-## **Dependencies**
-
-### **Server Dependencies**
-
-- **bcrypt**: For hashing passwords.
-- **cookie-parser**: For parsing cookies.
-- **cors**: For enabling Cross-Origin Resource Sharing.
-- **dotenv**: For loading environment variables.
-- **express**: The web framework used.
-- **jsonwebtoken**: For creating and verifying JSON Web Tokens.
-- **mongoose**: For MongoDB object modeling.
-- **nanoid**: For generating unique IDs.
-- **zod**: For data validation.
-
-### **Client Dependencies**
-
-- **react**: A JavaScript library for building user interfaces.
-- **react-dom**: For rendering React components in the browser.
-- **react-router-dom**: For routing in the React application.
-- **axios**: For making HTTP requests from the browser.
-- **vite**: A fast build tool for modern web development.
-- **tailwindcss**: A utility-first CSS framework.
-
----
-
-## **Future Scope**
+## **Future Scope 🔮**
 
 The project has a solid foundation, and future work could include:
 
-- Adding more robust error handling across the application.
-- Implementing unit and integration tests to ensure code quality.
-- Implementing the tagging functionality for content as defined in the contentSchema.
-- Enhancing the frontend with a more feature-rich user interface.
+- Adding more robust error handling and feedback mechanisms across the application.
+- Implementing comprehensive unit and integration tests to ensure code quality and reliability.
+- Expanding the tagging functionality to allow for more advanced organization and filtering.
+- Enhancing the user interface with more features, such as a more interactive dashboard, content previews, and advanced sharing options.
+- Implementing a system for user notifications and alerts.
+- Adding support for more content types and integrations with other platforms.
