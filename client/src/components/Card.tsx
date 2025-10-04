@@ -10,9 +10,17 @@ import { ImageIcon } from "../icons/ImageIcon";
 import { SpeakerIcon } from "../icons/SpeakerIcon";
 import { LinkIcon } from "../icons/LinkIcon";
 import { ShareModal } from "./ShareModel";
+import { EditContentModal } from "./EditContetModal";
+import { Pencil } from "../icons/pencil";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 type ContentType = "image" | "doc" | "video" | "audio" | "tweet";
+
+// Add this interface for the Tag
+interface Tag {
+  _id: string;
+  title: string;
+}
 
 interface CardProps {
   id: string;
@@ -22,6 +30,7 @@ interface CardProps {
   updateUI: boolean;
   setUpdateUI: (v: boolean) => void;
   type: ContentType;
+  tags: Tag[]; // Add tags to the props
 }
 
 const CardContent = ({
@@ -33,6 +42,7 @@ const CardContent = ({
   link: string;
   title: string;
 }) => {
+  // This function remains the same as your original
   switch (type) {
     case "video":
       try {
@@ -103,7 +113,14 @@ export function Card({
   type,
   updateUI,
   setUpdateUI,
+  tags,
 }: CardProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [sharableLink, setSharableLink] = useState<string>("");
+  const [isEditing, setIsEditing] = useState(false);
+
   const getContentIcon = (type: ContentType) => {
     switch (type) {
       case "video":
@@ -120,29 +137,22 @@ export function Card({
         return <LinkIcon />;
     }
   };
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [deleteError, setDeleteError] = useState<string | null>(null);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
-  const [sharableLink, setSharableLink] = useState<string>("");
+
   async function handelShare() {
     setIsShareModalOpen(true);
-    console.log(id, apiUrl);
     try {
       const response = await axios.post(
         `${apiUrl}/brain/share`,
         { id },
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       setSharableLink(response.data.message);
-      console.log("link created Successfully");
     } catch (err) {
       setSharableLink("Unable to create link");
       console.log("error creating link ", err);
     }
-    // app.post("/api/v1/brain/share/:id", auth, shareLink);
   }
+
   async function handleDeleteBtn() {
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this content?"
@@ -153,17 +163,14 @@ export function Card({
     setDeleteError(null);
     try {
       await axios.delete(`${apiUrl}/content/${id}`, { withCredentials: true });
-      console.log("deleted successfully");
       setUpdateUI(!updateUI);
     } catch (err) {
+      console.log(err);
       setDeleteError("Failed to delete. Please try again.");
-      console.error("failed to delete ", err);
     } finally {
       setIsDeleting(false);
     }
   }
-
-  const handelDeleteBtn = handleDeleteBtn;
 
   return (
     <div className="bg-white w-[354px] rounded-md border-2 border-black-200 overflow-y-auto max-h-80 mb-5">
@@ -172,15 +179,20 @@ export function Card({
           <div className="text-black-200"> {getContentIcon(type)}</div>
           <div className="font-medium">{title}</div>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
+          <button
+            onClick={() => setIsEditing(true)}
+            className="p-1 rounded hover:bg-gray-200 text-black-200 hover:cursor-pointer">
+            <Pencil />
+          </button>
           <div
-            className="text-black-200 hover:cursor-pointer "
+            className="text-black-200 hover:cursor-pointer p-1 rounded hover:bg-gray-200 "
             onClick={handelShare}>
             {<ShareIcon />}
           </div>
           <div
-            className="text-black-200 hover:cursor-pointer"
-            onClick={isDeleting ? undefined : handelDeleteBtn}>
+            className="text-black-200 hover:cursor-pointer p-1 rounded hover:bg-gray-200 "
+            onClick={isDeleting ? undefined : handleDeleteBtn}>
             {isDeleting ? <SpinnerIcon /> : <BinIcon />}
           </div>
         </div>
@@ -192,17 +204,37 @@ export function Card({
         </div>
       )}
 
-      <div className=" py-3 px-2 ">
-        <div className="overflow-y-auto max-h-80">
-          <CardContent title={title} type={type} link={link} />
-        </div>
+      <div className="flex-grow py-3 px-2 overflow-y-auto">
+        <CardContent title={title} type={type} link={link} />
       </div>
 
       <div className="px-3 pb-3">{description}</div>
+
+      {tags && tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 p-2 border-t">
+          {tags.map((tag) => (
+            <span
+              key={tag._id}
+              className="bg-purple-100 text-purple-500 text-xs font-semibold px-2.5 py-0.5 rounded-full">
+              {tag.title}
+            </span>
+          ))}
+        </div>
+      )}
+
       {isShareModalOpen && (
         <ShareModal
           link={sharableLink}
           onClose={() => setIsShareModalOpen(false)}
+        />
+      )}
+
+      {isEditing && (
+        <EditContentModal
+          content={{ _id: id, title, description }}
+          onClose={() => setIsEditing(false)}
+          setUpdateUI={setUpdateUI}
+          updateUI={updateUI}
         />
       )}
     </div>
