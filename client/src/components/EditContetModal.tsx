@@ -4,15 +4,12 @@ import { Cross } from "../icons/Cross";
 import { Button } from "./Button";
 
 const apiUrl = import.meta.env.VITE_API_URL;
-
-// Define the shape of the content object that this modal will receive
 interface Content {
   _id: string;
   title: string;
   description?: string;
 }
 
-// Define the props for the EditContentModal component
 interface EditContentModalProps {
   content: Content;
   onClose: () => void;
@@ -20,7 +17,6 @@ interface EditContentModalProps {
   updateUI: boolean;
 }
 
-// Define the shape of the form data state
 interface FormData {
   title: string;
   description: string;
@@ -61,7 +57,7 @@ export function EditContentModal({
   };
 
   return (
-    <div className="absolute top-0 left-0 text-white h-full w-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="absolute top-0 left-0 text-white h-full w-full flex items-center justify-center bg-black-100 z-50">
       <div className="bg-white h-auto w-96 text-purple-500 rounded-lg p-6 shadow-xl">
         <div className="flex justify-between items-center mb-5">
           <div className="font-medium text-xl">Edit Content</div>
