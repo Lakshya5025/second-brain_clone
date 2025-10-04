@@ -45,6 +45,7 @@ interface FormData {
   title: string;
   link: string;
   description: string;
+  tags: string;
 }
 
 export function CreateContentModel({
@@ -61,14 +62,19 @@ export function CreateContentModel({
     title: "",
     link: "",
     description: "",
+    tags: "",
   });
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
   };
+
   const handleSubmit = async () => {
     if (!activeType) {
       alert("Please select a content type.");
@@ -76,21 +82,21 @@ export function CreateContentModel({
     }
     const payload = {
       type: activeType,
-      ...formData,
+      title: formData.title,
+      link: formData.link,
+      description: formData.description,
+      tags: formData.tags
+        .split(",")
+        .map((tag) => tag.trim())
+        .filter((tag) => tag), // Split and clean tags
     };
 
     console.log("Sending data to backend:", payload);
 
     try {
-      const response = await axios.post(
-        `${apiUrl}/content`,
-        {
-          ...payload,
-        },
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post(`${apiUrl}/content`, payload, {
+        withCredentials: true,
+      });
       console.log(response.data);
       setUpdateUI(!updateUI);
       onClose();
@@ -101,7 +107,7 @@ export function CreateContentModel({
   };
   const handleTypeSelect = (type: string) => {
     setActiveType(type);
-    setFormData({ title: "", link: "", description: "" });
+    setFormData({ title: "", link: "", description: "", tags: "" });
   };
   const renderInputs = () => {
     switch (activeType) {
@@ -124,10 +130,18 @@ export function CreateContentModel({
               value={formData.link}
               onChange={handleInputChange}
             />
-            <Input
-              placeholder="Description"
+            <textarea
               name="description"
               value={formData.description}
+              onChange={handleInputChange}
+              placeholder="Description"
+              rows={4}
+              className="bg-gray-100 w-full rounded-md py-2 px-3 text-black  focus:ring-purple-500 focus:border-purple-500"
+            />
+            <Input
+              placeholder="Tags (comma-separated)"
+              name="tags"
+              value={formData.tags}
               onChange={handleInputChange}
             />
           </>
@@ -144,7 +158,7 @@ export function CreateContentModel({
 
   return (
     <div className="absolute top-0 text-white h-full w-full flex items-center justify-center opacity-100 bg-black-100">
-      <div className="bg-white h-90 w-90 text-purple-500 rounded-lg p-4">
+      <div className="bg-white h-auto w-90 text-purple-500 rounded-lg p-4">
         <div className="">
           <div className="flex justify-between mt-3 mb-5 ">
             <div className="font-medium text-xl">Add Content</div>
